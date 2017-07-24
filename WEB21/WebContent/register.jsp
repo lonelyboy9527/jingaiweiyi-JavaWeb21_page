@@ -29,6 +29,40 @@ font {
 	padding: 0 10px;
 }
 </style>
+
+<!-- WEB22异步校验用户名是否存在 -->
+<script type="text/javascript">
+	
+	$(function() {
+		//为输入框绑定一个事件
+		$("#username").blur(function () {
+			//1、获得失去焦点获得输入框的内容
+			var usernameInput = $(this).val();
+			//2.去服务端校验该用户名是否存在
+			//alert(usernameInput);
+			$.post(
+				"${pageContext.request.contextPath}/checkUsername",
+				{"username": usernameInput},
+				function(data) {
+					var isExist = data.isExist;
+					//3.根据返回的isExist动态显示信息
+					var usernameInfo="";
+					if(isExist) {
+						//用户存在 
+						usernameInfo="该用户名已经存在";
+						$("#usernameInfo").css("color", "red");
+					} else {
+						usernameInfo="该用户名可以注册";
+						$("#usernameInfo").css("color", "green");
+					}
+					$("#usernameInfo").html(usernameInfo);
+				},
+				"json"
+			)
+		});
+	});
+</script>
+
 </head>
 <body>
 
@@ -48,6 +82,7 @@ font {
 						<div class="col-sm-6">
 							<input type="text" class="form-control" id="username"
 								placeholder="请输入用户名">
+								<span id="usernameInfo"></span>
 						</div>
 					</div>
 					<div class="form-group">

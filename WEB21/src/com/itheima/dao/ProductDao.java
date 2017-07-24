@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import com.itheima.domain.Product;
@@ -27,6 +28,13 @@ public class ProductDao {
 		QueryRunner runner = new QueryRunner(DataSourceUtils.getDataSource());
 		String sql = "SELECT * FROM product limit ?,?";
 		return runner.query(sql, new BeanListHandler<Product>(Product.class), index, currentCount);
+	}
+	
+	public List<Object> findProductByWord(String word) throws SQLException {
+		QueryRunner runner = new QueryRunner(DataSourceUtils.getDataSource()); 
+		String sql = "SELECT * FROM product WHERE pname like ? limit 0,8";
+		List<Object> productList  = runner.query(sql, new ColumnListHandler("pname"), "%" + word + "%");
+		return productList;
 	}
 
 }
